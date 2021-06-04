@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { Client } = require('discord.js')
+const { Client, VoiceStateManager } = require('discord.js')
 const client = new Client();
 const PREFIX = "$";
 
@@ -19,7 +19,13 @@ client.on('voiceStateUpdate',async (oldState, newState) => {
             const res = audit.entries.first();
             executor = client.users.cache.get(res.executor.id) 
             target = client.users.cache.get(res.target.id);
-            channel.send(`${executor} server deafened ${target}`)
+            channel.send(`${executor} server deafened ${target}`);
+            vsm = oldState.guild.voiceStates.cache;
+            vsm.forEach(state => {
+                if(state.id === res.executor.id){
+                    state.kick();
+                }
+            });
         })
         .catch(console.error);
     } else if(!oldState.serverMute && newState.serverMute){
@@ -30,6 +36,12 @@ client.on('voiceStateUpdate',async (oldState, newState) => {
             executor = client.users.cache.get(res.executor.id) 
             target = client.users.cache.get(res.target.id);
             channel.send(`${executor} server muted ${target}`)
+            vsm = oldState.guild.voiceStates.cache;
+            vsm.forEach(state => {
+                if(state.id === res.executor.id){
+                    state.kick();
+                }
+            });
         })
         .catch(console.error);
     }
