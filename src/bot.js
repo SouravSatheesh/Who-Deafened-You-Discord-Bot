@@ -9,8 +9,11 @@ client.on('ready', () => {
 });
 
 client.on('voiceStateUpdate',async (oldState, newState) => {
+    client.channels.cache.forEach(channel => {
+        if(channel.name === "bot") botchannel=channel.id;
+    });
     if(!oldState.serverDeaf && newState.serverDeaf){
-        channel = client.channels.cache.get("849685811451527249");
+        channel = client.channels.cache.get(botchannel);
         await oldState.guild.fetchAuditLogs()
         .then((audit) => {
             const res = audit.entries.first();
@@ -20,7 +23,7 @@ client.on('voiceStateUpdate',async (oldState, newState) => {
         })
         .catch(console.error);
     } else if(!oldState.serverMute && newState.serverMute){
-        channel = client.channels.cache.get("849685811451527249");
+        channel = client.channels.cache.get(botchannel);
         await oldState.guild.fetchAuditLogs()
         .then((audit) => {
             const res = audit.entries.first();
