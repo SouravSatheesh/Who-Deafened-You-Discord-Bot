@@ -9,8 +9,9 @@ client.on('ready', () => {
 });
 
 client.on('voiceStateUpdate',async (oldState, newState) => {
-    client.channels.cache.forEach(channel => {
+    oldState.guild.channels.cache.forEach(channel => {
         if(channel.name === "bot") botchannel=channel.id;
+        console.log(channel);
     });
     if(!oldState.serverDeaf && newState.serverDeaf){
         channel = client.channels.cache.get(botchannel);
